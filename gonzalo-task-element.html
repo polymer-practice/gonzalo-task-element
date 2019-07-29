@@ -6,9 +6,41 @@
     <style>
       :host {
         display: block;
+        --primary-color: var(--primary-color-task-element, #3f51b5);
+        --done-color: var(--done-color-task-element, #38E896);
+        --cancelled-color: var(--cancelled-color-task-element, #E82C3F);
       }
+      
+      .task{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .task-label {
+        margin-left: 5px;
+      }
+
+      .pending {
+        color: var(--primary-color);
+      }
+
+      .done {
+        text-decoration: line-through;
+        color: var(--done-color);
+      }
+
+      .cancel {
+        text-decoration: line-through;
+        color: var(--cancelled-color);
+      }
+
     </style>
-     <iron-icon icon="icons:radio-button-checked"></iron-icon>[[title]]
+    <div class$="task [[state]]">
+      <iron-icon icon="icons:radio-button-checked"></iron-icon>
+      <div class="task-label">[[title]]</div>
+    </div>
+     
   </template>
 
   <script>
@@ -20,8 +52,29 @@
             type: String,
             value: 'gonzalo-task-element'
           },
-          key: number
+          key: Number,
+          canceled: Boolean,
+          done: Boolean,
+          state: {
+            type: String,
+            value: 'pending',
+            computed: 'getState(canceled,done)'
+          }
         };
+      }
+
+      getState(canceled, done) {
+        let result = 'pending';
+
+        if (canceled) {
+          result = 'cancel';
+        }
+
+        if (done) {
+          result = 'done'
+        }
+
+        return result;
       }
     }
 
