@@ -1,0 +1,29 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="gonzalo-task-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+    <h2>I'm Gonzalo</h2>
+  </template>
+
+  <script>
+    class GonzaloTaskElement extends Polymer.Element {
+      static get is() { return 'gonzalo-task-element'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'gonzalo-task-element'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(GonzaloTaskElement.is, GonzaloTaskElement);
+  </script>
+</dom-module>
