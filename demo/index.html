@@ -22,11 +22,19 @@
       <h3>Basic gonzalo-task-element demo</h3>
       <demo-snippet>
         <template>
-          <gonzalo-task-element title="Learn Polymer 2" key="0" done></gonzalo-task-element>
-          <gonzalo-task-element title="Play football" key="1" canceled></gonzalo-task-element>
-          <gonzalo-task-element title="Learn english" key="2"></gonzalo-task-element>
-          <gonzalo-task-element title="Go home" key="3"></gonzalo-task-element>
+          <div id="set-tasks">
+            <gonzalo-task-element title="Learn Polymer 2" key="0"></gonzalo-task-element>
+            <gonzalo-task-element title="Play football" key="1" done></gonzalo-task-element>
+            <gonzalo-task-element title="Learn english" key="2" canceled></gonzalo-task-element>
+            <gonzalo-task-element title="Go home" key="3" done canceled></gonzalo-task-element>
+          </div>
         </template>
+        <script>
+          const setTasks = document.getElementById('set-tasks');
+          setTasks.addEventListener('pending-event', (event) => console.log(event.detail));
+          setTasks.addEventListener('done-event', (event) => console.log(event.detail));
+          setTasks.addEventListener('cancel-event', (event) => console.log(event.detail));
+        </script>
       </demo-snippet>
     </div>
   </body>

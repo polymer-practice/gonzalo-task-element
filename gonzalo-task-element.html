@@ -11,10 +11,16 @@
         --cancelled-color: var(--cancelled-color-task-element, #E82C3F);
       }
       
+      .task-container {
+        display: flex;
+        flex-direction: column;
+      }
+
       .task{
         display: flex;
         flex-direction: row;
         align-items: center;
+        padding: 5px 0px;
       }
 
       .task-label {
@@ -35,11 +41,58 @@
         color: var(--cancelled-color);
       }
 
+      .btn {
+        background-color: var(--primary-color);
+        color: var(--secoundary-color);
+        width: 70px;
+        height: 30px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+      }
+      .btn.done {
+        background-color: var(--done-color);
+        text-decoration: none;
+      }
+      .btn.cancel {
+        background-color: var(--cancelled-color);
+        text-decoration:none;
+      }
+
+      @media(min-width: 600px) {
+        .task-container {
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+        }
+
+        .buttons-set {
+          margin-left: auto;
+        }
+      }
+
     </style>
-    <div class$="task [[state]]">
-      <iron-icon icon="icons:radio-button-checked"></iron-icon>
-      <div class="task-label">[[title]]</div>
+    <div class="task-container">
+      <div class$="task [[state]]">
+        <iron-icon icon="icons:radio-button-checked"></iron-icon>
+        <div class="task-label">[[title]]</div>
+      </div>
+
+      <div class="buttons-set">
+        <template is="dom-if" if=[[showPending]]>
+          <button type="button" name="pending" on-click="onClickButton" class="btn pending">Pending</button>
+        </template>
+        <template is="dom-if" if=[[showDone]]>
+          <button type="button" name="done" on-click="onClickButton" class="btn done">Done</button>
+        </template>
+        <template is="dom-if" if=[[showCancel]]>
+          <button type="button" name="cancel" on-click="onClickButton" class="btn cancel">Cancel</button>
+        </template>
+      </div>
+
     </div>
+    
      
   </template>
 
@@ -59,23 +112,67 @@
             type: String,
             value: 'pending',
             computed: 'getState(canceled,done)'
+          },
+          showPending: {
+            type: Boolean,
+            value: false
+          },
+          showDone: {
+            type: Boolean,
+            value: true
+          },
+          showCancel: {
+            type: Boolean,
+            value: true
           }
         };
       }
 
       getState(canceled, done) {
         let result = 'pending';
-
         if (canceled) {
           result = 'cancel';
+          this.showPending = true;
+          this.showDone = true;
+          this.showCancel = false;
         }
-
         if (done) {
-          result = 'done'
-        }
-
+          result = 'done';
+          this.showPending = true;
+          this.showDone = false;
+          this.showCancel = true;
+        } 
         return result;
       }
+
+      onClickButton (event) {
+        const buttonType = event.target.getAttribute('name');
+        let typeCustomEvent;
+        let customEvent
+        switch(buttonType) {
+          case 'pending':
+            typeCustomEvent = 'pending-event';
+          break;
+          case 'done':
+            typeCustomEvent = 'done-event';
+          break;
+          case 'cancel':
+            typeCustomEvent = 'cancel-event';
+          break;
+        }
+        customEvent = new CustomEvent(
+          typeCustomEvent,
+          {
+            bubbles: true,
+            composed: true,
+            detail: {
+              key: this.key
+            }
+          }
+        );
+        this.dispatchEvent(customEvent);
+      }
+    
     }
 
     window.customElements.define(GonzaloTaskElement.is, GonzaloTaskElement);
